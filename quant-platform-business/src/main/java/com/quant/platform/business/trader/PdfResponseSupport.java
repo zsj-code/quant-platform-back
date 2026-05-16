@@ -127,7 +127,7 @@ public final class PdfResponseSupport {
     /**
      * 去掉路径片段与换行，降低响应头注入风险；下载场景下无 {@code .pdf} 时补上。
      */
-    static String safeFilename(String raw, boolean ensurePdfExtension) {
+    public static String safeFilename(String raw, boolean ensurePdfExtension) {
         if (raw == null) {
             return "document.pdf";
         }

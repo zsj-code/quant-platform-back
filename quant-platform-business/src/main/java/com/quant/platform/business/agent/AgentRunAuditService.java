@@ -80,5 +80,9 @@ public class AgentRunAuditService {
     public void markFailed(String workflowRunKey, String errorMessage) {
         runMapper.updateStatusAndFinished(workflowRunKey, TraderDecisionWorkflowRunStatus.FAILED.name(), errorMessage);
     }
+
+    public void markCancelled(String workflowRunKey, String reason) {
+        runMapper.updateStatusAndFinished(workflowRunKey, TraderDecisionWorkflowRunStatus.CANCELLED.name(), reason);
+    }
 }
 

@@ -77,4 +77,4 @@ quant:
         base-url: https://api.deepseek.com
         model: deepseek-reasoner
         temperature: ${QUANT_AI_LANGCHAIN4J_OPENAI_TEMPERATURE:0.2}
-        timeout: 12000
+        timeout: 120000

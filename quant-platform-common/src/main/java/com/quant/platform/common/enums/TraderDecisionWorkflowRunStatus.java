@@ -6,5 +6,6 @@ package com.quant.platform.common.enums;
 public enum TraderDecisionWorkflowRunStatus {
     RUNNING,
     SUCCEEDED,
-    FAILED
+    FAILED,
+    CANCELLED
 }

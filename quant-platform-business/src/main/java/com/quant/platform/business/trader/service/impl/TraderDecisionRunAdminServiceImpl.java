@@ -3,6 +3,10 @@ package com.quant.platform.business.trader.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.quant.platform.business.stock.entity.StockEntity;
+import com.quant.platform.business.stock.mapper.StockMapper;
+import com.quant.platform.business.trader.PdfResponseSupport;
+import com.quant.platform.business.trader.dto.TraderDecisionRunPdfExport;
 import com.quant.platform.business.trader.entity.TraderDecisionWorkflowRunEntity;
 import com.quant.platform.business.trader.entity.TraderDecisionWorkflowStepEntity;
 import com.quant.platform.business.trader.mapper.TraderDecisionWorkflowRunMapper;
@@ -17,6 +21,8 @@ import com.quant.platform.common.util.CommonUtil;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -26,15 +32,20 @@ public class TraderDecisionRunAdminServiceImpl implements TraderDecisionRunAdmin
     private static final long DEFAULT_SIZE = 20L;
     private static final long MAX_SIZE = 100L;
 
+    private static final DateTimeFormatter PDF_FILE_TIME = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+
     private final TraderDecisionWorkflowRunMapper traderDecisionWorkflowRunMapper;
     private final TraderDecisionWorkflowStepMapper traderDecisionWorkflowStepMapper;
+    private final StockMapper stockMapper;
     private final TraderDecisionRunPdfRenderer traderDecisionRunPdfRenderer;
 
     public TraderDecisionRunAdminServiceImpl(TraderDecisionWorkflowRunMapper traderDecisionWorkflowRunMapper,
                                              TraderDecisionWorkflowStepMapper traderDecisionWorkflowStepMapper,
+                                             StockMapper stockMapper,
                                              TraderDecisionRunPdfRenderer traderDecisionRunPdfRenderer) {
         this.traderDecisionWorkflowRunMapper = traderDecisionWorkflowRunMapper;
         this.traderDecisionWorkflowStepMapper = traderDecisionWorkflowStepMapper;
+        this.stockMapper = stockMapper;
         this.traderDecisionRunPdfRenderer = traderDecisionRunPdfRenderer;
     }
 
@@ -54,19 +65,52 @@ public class TraderDecisionRunAdminServiceImpl implements TraderDecisionRunAdmin
     }
 
     @Override
-    public byte[] buildRunPdf(String id) {
+    public TraderDecisionRunPdfExport buildRunPdfExport(String id) {
         if (id == null || id.isBlank()) {
             throw new BizException(ResultCode.BAD_REQUEST, "id 不能为空");
         }
-        TraderDecisionWorkflowRunEntity e = traderDecisionWorkflowRunMapper.selectById(id.trim());
-        if (e == null) {
+        TraderDecisionWorkflowRunEntity run = traderDecisionWorkflowRunMapper.selectById(id.trim());
+        if (run == null) {
             throw new BizException(ResultCode.NOT_FOUND, "运行记录不存在");
         }
         try {
-            return traderDecisionRunPdfRenderer.renderLlmSummaryPdf(e.getLlmSummaryText());
+            byte[] pdf = traderDecisionRunPdfRenderer.renderLlmSummaryPdf(run.getLlmSummaryText());
+            String fileName = buildPdfFileName(run);
+            return new TraderDecisionRunPdfExport(pdf, fileName);
         } catch (IOException ex) {
             throw new BizException(ResultCode.INTERNAL_ERROR, "生成 PDF 失败: " + ex.getMessage());
         }
+    }
+
+    private String buildPdfFileName(TraderDecisionWorkflowRunEntity run) {
+        String code = CommonUtil.normalizeSixDigitCode(run.getSecCode());
+        if (code == null || code.isBlank()) {
+            code = sanitizeFileNamePart(run.getRequestCodeRaw(), "未知代码");
+        }
+        String name = resolveStockName(code);
+        String time = LocalDateTime.now().format(PDF_FILE_TIME);
+        String raw = code + "-" + name + "-" + time + ".pdf";
+        return PdfResponseSupport.safeFilename(raw, true);
+    }
+
+    private String resolveStockName(String secCode) {
+        if (secCode == null || secCode.isBlank()) {
+            return "未知股票";
+        }
+        StockEntity stock = stockMapper.selectOne(new LambdaQueryWrapper<StockEntity>().eq(StockEntity::getCode, secCode)
+            .last("LIMIT 1"));
+        if (stock == null || stock.getName() == null || stock.getName().isBlank()) {
+            return "未知股票";
+        }
+        return sanitizeFileNamePart(stock.getName(), "未知股票");
+    }
+
+    private static String sanitizeFileNamePart(String raw, String fallback) {
+        if (raw == null || raw.isBlank()) {
+            return fallback;
+        }
+        String s = raw.trim().replaceAll("[\\\\/:*?\"<>|\\r\\n]+", "_");
+        return s.isEmpty() ? fallback : s;
     }
 
     @Override
