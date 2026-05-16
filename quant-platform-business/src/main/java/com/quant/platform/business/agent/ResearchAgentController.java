@@ -136,7 +136,7 @@ public class ResearchAgentController {
             return emitter;
         }
         if (StringUtils.isEmpty(message)) {
-            message = "标的：" + CommonUtil.toSymbol(code) + "帮我做一次基本面+技术面+情绪面综合评估，并给出风险点。";
+            message = "标的：" + CommonUtil.toSymbol(code) + "，帮我做一次基本面+技术面+情绪面综合评估，并给出风险点。";
         } else {
             message = "标的：" + CommonUtil.toSymbol(code) + message;
         }

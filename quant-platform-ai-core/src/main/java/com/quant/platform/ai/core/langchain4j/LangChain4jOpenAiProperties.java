@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * LangChain4j OpenAI-compatible 配置。
  * <p>
- * 说明：DeepSeek 等 OpenAI 兼容厂商也可通过 baseUrl 接入。
+ * 说明：DeepSeek 等 OpenAI 兼容厂商也可通过 baseUrl 接入；阻塞与流式可配置不同 V4 模型。
  */
 @ConfigurationProperties(prefix = "quant.ai.langchain4j.openai")
 public class LangChain4jOpenAiProperties {
@@ -15,14 +15,21 @@ public class LangChain4jOpenAiProperties {
     private String apiKey;
 
     /**
-     * OpenAI-compatible baseUrl，例如：{@code https://api.openai.com/v1}、{@code https://api.deepseek.com/v1}
+     * OpenAI-compatible baseUrl，例如：{@code https://api.openai.com/v1}、{@code https://api.deepseek.com}
      */
     private String baseUrl = "https://api.openai.com/v1";
 
     /**
-     * 模型名，例如：gpt-4.1-mini / deepseek-reasoner（取决于厂商）。
+     * 非流式模型（{@link dev.langchain4j.model.chat.ChatModel}）：规划、阻塞对话等。
+     * DeepSeek V4 示例：{@code deepseek-v4-pro}、{@code deepseek-v4-flash}。
      */
-    private String model = "gpt-4.1-mini";
+    private String model = "deepseek-v4-pro";
+
+    /**
+     * 流式模型（{@link dev.langchain4j.model.chat.StreamingChatModel}）：SSE 逐 token 输出。
+     * 未配置时回退为 {@link #model}。
+     */
+    private String streamingModel;
 
     /**
      * 采样温度。
@@ -53,6 +60,24 @@ public class LangChain4jOpenAiProperties {
 
     public void setModel(String model) {
         this.model = model;
+    }
+
+    public String getStreamingModel() {
+        return streamingModel;
+    }
+
+    public void setStreamingModel(String streamingModel) {
+        this.streamingModel = streamingModel;
+    }
+
+    /**
+     * 流式调用实际使用的模型名。
+     */
+    public String resolveStreamingModel() {
+        if (streamingModel != null && !streamingModel.isBlank()) {
+            return streamingModel.trim();
+        }
+        return model;
     }
 
     public double getTemperature() {

@@ -73,8 +73,11 @@ quant:
         # Windows PowerShell: $env:QUANT_AI_LANGCHAIN4J_OPENAI_API_KEY="sk-..."
         # Linux/macOS: export QUANT_AI_LANGCHAIN4J_OPENAI_API_KEY="sk-..."
         api-key: ${QUANT_AI_LANGCHAIN4J_OPENAI_API_KEY}
-        # OpenAI-compatible baseUrl，例如：https://api.openai.com/v1 或 https://api.deepseek.com/v1
+        # OpenAI-compatible baseUrl，例如：https://api.openai.com/v1 或 https://api.deepseek.com
         base-url: https://api.deepseek.com
-        model: deepseek-reasoner
+        # 非流式（规划 ResearchPlanner、POST /chat 阻塞回答）
+#        model: ${QUANT_AI_LANGCHAIN4J_OPENAI_MODEL:deepseek-v4-pro}
+        # 流式（Research chat-sse、TokenStream）；未设则与 model 相同
+        streaming-model: ${QUANT_AI_LANGCHAIN4J_OPENAI_STREAMING_MODEL:deepseek-v4-flash}
         temperature: ${QUANT_AI_LANGCHAIN4J_OPENAI_TEMPERATURE:0.2}
         timeout: 120000

@@ -41,7 +41,7 @@ public class LangChain4jConfiguration {
         return OpenAiStreamingChatModel.builder()
                 .apiKey(p.getApiKey())
                 .baseUrl(p.getBaseUrl())
-                .modelName(p.getModel())
+                .modelName(p.resolveStreamingModel())
                 .temperature(p.getTemperature())
                 .timeout(Duration.ofSeconds(p.getTimeout()))
                 .logRequests(true)

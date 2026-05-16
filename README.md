@@ -85,7 +85,7 @@ $env:QUANT_AI_LANGCHAIN4J_OPENAI_API_KEY="sk-..."
 export QUANT_AI_LANGCHAIN4J_OPENAI_API_KEY="sk-..."
 ```
 
-可在 `application.yml` 的 `quant.ai.langchain4j.openai` 下调整 `base-url`、`model`、`temperature` 等（默认对接 DeepSeek 兼容接口）。
+可在 `application.yml` 的 `quant.ai.langchain4j.openai` 下调整 `base-url`、`model`（非流式）、`streaming-model`（流式）、`temperature` 等（默认 DeepSeek V4：`deepseek-v4-pro` + `deepseek-v4-flash`）。
 
 ### 4. 启动应用
 
