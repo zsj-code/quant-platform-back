@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quant.platform.business.trader.mapper.TraderDecisionWorkflowRunMapper">
+
+    <!--
+      说明：该文件此前被整段注释，导致 MyBatis 在扫描 mapper/*.xml 时解析失败（“文件前端有内容”）。
+      先保留为一个可被解析的空 mapper，后续再按实际 Mapper 接口包名补齐 namespace 与 SQL。
+    -->
+
+    <update id="updateStatusAndFinished">
+        UPDATE trader_decision_workflow_run
+        SET status = #{status},
+            finished_at = NOW(3),
+            error_message = #{errorMessage}
+        WHERE workflow_run_key = #{workflowRunKey}
+    </update>
+
+    <update id="updateDecisionJson">
+        UPDATE trader_decision_workflow_run
+        SET decision_json = #{decisionJson}
+        WHERE workflow_run_key = #{workflowRunKey}
+    </update>
+
+    <update id="updateLlmSummaryAndFinish">
+        UPDATE trader_decision_workflow_run
+        SET llm_summary_text = #{llmSummaryText},
+            status = 'SUCCEEDED',
+            finished_at = NOW(3),
+            error_message = NULL
+        WHERE workflow_run_key = #{workflowRunKey}
+    </update>
+
+    <update id="markSucceeded">
+        UPDATE trader_decision_workflow_run
+        SET status = 'SUCCEEDED',
+            finished_at = NOW(3),
+            error_message = NULL
+        WHERE workflow_run_key = #{workflowRunKey}
+    </update>
+</mapper>

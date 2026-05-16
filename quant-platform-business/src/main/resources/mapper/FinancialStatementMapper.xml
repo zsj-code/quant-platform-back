@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quant.platform.business.financial.mapper.FinancialStatementMapper">
+
+    <insert id="upsertBatch">
+        INSERT INTO financial_statement (
+            id, code, symbol, report_type, report_date, raw_json, source_report_name, fetched_at
+        )
+        VALUES
+        <foreach collection="list" item="e" separator=",">
+            (
+                #{e.id}, #{e.code}, #{e.symbol}, #{e.reportType}, #{e.reportDate}, #{e.rawJson},
+                #{e.sourceReportName}, #{e.fetchedAt}
+            )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+            symbol = VALUES(symbol),
+            raw_json = VALUES(raw_json),
+            source_report_name = VALUES(source_report_name),
+            fetched_at = VALUES(fetched_at)
+    </insert>
+</mapper>

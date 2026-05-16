@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quant.platform.business.kline.mapper.KlineSyncLogMapper">
+
+    <insert id="insertIgnore">
+        INSERT IGNORE INTO kline_sync_log (id, stock_code, symbol, interval_type, sync_date, bar_count, created_at)
+        VALUES (
+            #{e.id}, #{e.stockCode}, #{e.symbol}, #{e.intervalType}, #{e.syncDate},
+            #{e.barCount}, #{e.createdAt}
+        )
+    </insert>
+
+</mapper>

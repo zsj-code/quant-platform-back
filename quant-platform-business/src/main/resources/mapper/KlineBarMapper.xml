@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quant.platform.business.kline.mapper.KlineBarMapper">
+
+    <insert id="insertBatch">
+        INSERT INTO kline_bar (id, symbol, interval_type, bar_time, open, high, low, close, volume,
+                               amount, amplitude, change_pct, change_amount, turnover_rate)
+        VALUES
+        <foreach collection="list" item="e" separator=",">
+            (
+                #{e.id}, #{e.symbol}, #{e.intervalType}, #{e.barTime},
+                #{e.open}, #{e.high}, #{e.low}, #{e.close}, #{e.volume},
+                #{e.amount}, #{e.amplitude}, #{e.changePct}, #{e.changeAmount}, #{e.turnoverRate}
+            )
+        </foreach>
+    </insert>
+
+</mapper>

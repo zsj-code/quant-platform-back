@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quant.platform.business.trader.mapper.TraderDecisionWorkflowStepMapper">
+
+    <!-- 该文件此前被整段注释，MyBatis 扫描 mapper/*.xml 时会解析失败 -->
+
+    <insert id="upsertStep">
+        INSERT INTO trader_decision_workflow_step (
+            id, workflow_run_id, step_key, step_name, order_index, status,
+            started_at, finished_at, duration_millis, detail,
+            llm_system_prompt, llm_user_prompt, llm_response_text
+        ) VALUES (
+            #{e.id}, #{e.workflowRunId}, #{e.stepKey}, #{e.stepName}, #{e.orderIndex}, #{e.status},
+            #{e.startedAt}, #{e.finishedAt}, #{e.durationMillis}, #{e.detail},
+            #{e.llmSystemPrompt}, #{e.llmUserPrompt}, #{e.llmResponseText}
+        )
+        ON DUPLICATE KEY UPDATE
+            step_name = VALUES(step_name),
+            order_index = VALUES(order_index),
+            status = VALUES(status),
+            started_at = VALUES(started_at),
+            finished_at = VALUES(finished_at),
+            duration_millis = VALUES(duration_millis),
+            detail = VALUES(detail),
+            llm_system_prompt = VALUES(llm_system_prompt),
+            llm_user_prompt = VALUES(llm_user_prompt),
+            llm_response_text = VALUES(llm_response_text)
+    </insert>
+
+    <update id="patchLlmResponseByRunIdAndStepKey">
+        UPDATE trader_decision_workflow_step
+        SET llm_response_text = #{llmResponseText}
+        WHERE workflow_run_id = #{workflowRunId}
+          AND step_key = #{stepKey}
+    </update>
+</mapper>

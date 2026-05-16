@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quant.platform.business.stock.mapper.StockIndustryValuationMapper">
+
+    <insert id="upsertBatch">
+        INSERT INTO stock_industry_valuation (
+            id, symbol, sec_code, stock_name, industry_name_from_quote, industry_board_code, industry_board_name,
+            board_change_pct, board_pe_ttm, board_pb, board_ps_ttm, board_total_market_cap_yuan,
+            board_circ_market_cap_yuan, fetched_at
+        )
+        VALUES
+        <foreach collection="list" item="e" separator=",">
+            (
+                #{e.id}, #{e.symbol}, #{e.secCode}, #{e.stockName}, #{e.industryNameFromQuote},
+                #{e.industryBoardCode}, #{e.industryBoardName}, #{e.boardChangePct}, #{e.boardPeTtm}, #{e.boardPb},
+                #{e.boardPsTtm}, #{e.boardTotalMarketCapYuan}, #{e.boardCircMarketCapYuan}, #{e.fetchedAt}
+            )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+            sec_code = VALUES(sec_code),
+            stock_name = VALUES(stock_name),
+            industry_name_from_quote = VALUES(industry_name_from_quote),
+            industry_board_code = VALUES(industry_board_code),
+            industry_board_name = VALUES(industry_board_name),
+            board_change_pct = VALUES(board_change_pct),
+            board_pe_ttm = VALUES(board_pe_ttm),
+            board_pb = VALUES(board_pb),
+            board_ps_ttm = VALUES(board_ps_ttm),
+            board_total_market_cap_yuan = VALUES(board_total_market_cap_yuan),
+            board_circ_market_cap_yuan = VALUES(board_circ_market_cap_yuan),
+            fetched_at = VALUES(fetched_at)
+    </insert>
+</mapper>

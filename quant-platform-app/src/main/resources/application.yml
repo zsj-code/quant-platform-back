@@ -1,0 +1,80 @@
+server:
+  port: 8082
+  servlet:
+    context-path: /quant-ai
+    # 异步 SSE（SseEmitter）若未强制编码，String 写出可能按 ISO-8859-1，导致中文乱码
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+
+spring:
+  application:
+    name: quant-platform
+  jackson:
+    time-zone: Asia/Shanghai
+    serialization:
+      write-dates-as-timestamps: false
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/quantdb?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      database: 0
+      timeout: 2s
+
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: health,info
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    ai.quant.data.mapper: debug
+
+xxl:
+  job:
+    admin:
+      addresses: http://127.0.0.1:8081/xxl-job-admin
+    accessToken: "default_token"
+    executor:
+      appname: quant-ai-executor
+      address: ""
+      ip: ""
+      port: 9999
+      logpath: ./logs/xxl-job
+      logretentiondays: 30
+
+quant:
+  # 社区：淘股吧帖与评论（时间窗、分页、限速）
+  integration:
+    community-post:
+      lookback-days: 1
+      max-list-pages-per-stock: 10
+      list-page-size: 20
+      max-comment-pages-per-post: 10
+      comment-page-size: 20
+      sleep-ms-between-pages: 1000
+  ai:
+    langchain4j:
+      openai:
+        # 必填：通过环境变量注入，勿将 key 写入仓库
+        # Windows PowerShell: $env:QUANT_AI_LANGCHAIN4J_OPENAI_API_KEY="sk-..."
+        # Linux/macOS: export QUANT_AI_LANGCHAIN4J_OPENAI_API_KEY="sk-..."
+        api-key: ${QUANT_AI_LANGCHAIN4J_OPENAI_API_KEY}
+        # OpenAI-compatible baseUrl，例如：https://api.openai.com/v1 或 https://api.deepseek.com/v1
+        base-url: https://api.deepseek.com
+        model: deepseek-reasoner
+        temperature: ${QUANT_AI_LANGCHAIN4J_OPENAI_TEMPERATURE:0.2}
+        timeout: 12000

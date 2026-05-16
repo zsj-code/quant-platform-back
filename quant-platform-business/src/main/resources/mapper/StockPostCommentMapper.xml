@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quant.platform.business.stock.mapper.StockPostCommentMapper">
+
+    <insert id="upsertBatch">
+        INSERT INTO stock_post_comment (
+            id, source, external_id, post_external_id, sec_code, author, publish_time,
+            floor_no, like_count, content_text, raw_html, fetched_at
+        )
+        VALUES
+        <foreach collection="list" item="e" separator=",">
+            (
+                #{e.id}, #{e.source}, #{e.externalId}, #{e.postExternalId}, #{e.secCode}, #{e.author}, #{e.publishTime},
+                #{e.floorNo}, #{e.likeCount}, #{e.contentText}, #{e.rawHtml}, #{e.fetchedAt}
+            )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+            post_external_id = VALUES(post_external_id),
+            sec_code = VALUES(sec_code),
+            author = VALUES(author),
+            publish_time = VALUES(publish_time),
+            floor_no = VALUES(floor_no),
+            like_count = VALUES(like_count),
+            content_text = VALUES(content_text),
+            raw_html = VALUES(raw_html),
+            fetched_at = VALUES(fetched_at)
+    </insert>
+</mapper>
+

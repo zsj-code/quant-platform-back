@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quant.platform.business.research.mapper.ResearchReportStockMapper">
+
+    <insert id="upsertBatch">
+        INSERT INTO research_report_stock (
+            id, source, external_id, sec_code, symbol, stock_name, industry_name, title, org_s_name, publish_date,
+            rating_name, report_type, column_code, info_code, encode_url, detail_url, raw_json, fetched_at
+        )
+        VALUES
+        <foreach collection="list" item="e" separator=",">
+            (
+                #{e.id}, #{e.source}, #{e.externalId}, #{e.secCode}, #{e.symbol}, #{e.stockName}, #{e.industryName},
+                #{e.title}, #{e.orgSName}, #{e.publishDate}, #{e.ratingName}, #{e.reportType}, #{e.columnCode},
+                #{e.infoCode}, #{e.encodeUrl}, #{e.detailUrl}, #{e.rawJson}, #{e.fetchedAt}
+            )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+            sec_code = VALUES(sec_code),
+            symbol = VALUES(symbol),
+            stock_name = VALUES(stock_name),
+            industry_name = VALUES(industry_name),
+            title = VALUES(title),
+            org_s_name = VALUES(org_s_name),
+            publish_date = VALUES(publish_date),
+            rating_name = VALUES(rating_name),
+            report_type = VALUES(report_type),
+            column_code = VALUES(column_code),
+            info_code = VALUES(info_code),
+            encode_url = VALUES(encode_url),
+            detail_url = VALUES(detail_url),
+            raw_json = VALUES(raw_json),
+            fetched_at = VALUES(fetched_at)
+    </insert>
+</mapper>

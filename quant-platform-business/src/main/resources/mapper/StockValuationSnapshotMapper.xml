@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quant.platform.business.stock.mapper.StockValuationSnapshotMapper">
+
+    <insert id="upsertBatch">
+        INSERT INTO stock_valuation_snapshot (
+            id, symbol, sec_code, stock_name, latest_price, change_pct, volume, amount, turnover_rate, volume_ratio,
+            prev_close, open_price, high_price, low_price, avg_price, limit_up, limit_down, amplitude,
+            total_market_cap_yuan, circ_market_cap_yuan, total_shares, float_shares,
+            pe_dynamic, pc, pe_static, ps, pb, raw_quote_json, fetched_at
+        )
+        VALUES
+        <foreach collection="list" item="e" separator=",">
+            (
+                #{e.id}, #{e.symbol}, #{e.secCode}, #{e.stockName}, #{e.latestPrice}, #{e.changePct}, #{e.volume},
+                #{e.amount}, #{e.turnoverRate}, #{e.volumeRatio}, #{e.prevClose}, #{e.openPrice}, #{e.highPrice},
+                #{e.lowPrice}, #{e.avgPrice}, #{e.limitUp}, #{e.limitDown}, #{e.amplitude},
+                #{e.totalMarketCapYuan}, #{e.circMarketCapYuan}, #{e.totalShares}, #{e.floatShares},
+                #{e.peDynamic}, #{e.pc}, #{e.peStatic}, #{e.ps}, #{e.pb}, #{e.rawQuoteJson}, #{e.fetchedAt}
+            )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+            sec_code = VALUES(sec_code),
+            stock_name = VALUES(stock_name),
+            latest_price = VALUES(latest_price),
+            change_pct = VALUES(change_pct),
+            volume = VALUES(volume),
+            amount = VALUES(amount),
+            turnover_rate = VALUES(turnover_rate),
+            volume_ratio = VALUES(volume_ratio),
+            prev_close = VALUES(prev_close),
+            open_price = VALUES(open_price),
+            high_price = VALUES(high_price),
+            low_price = VALUES(low_price),
+            avg_price = VALUES(avg_price),
+            limit_up = VALUES(limit_up),
+            limit_down = VALUES(limit_down),
+            amplitude = VALUES(amplitude),
+            total_market_cap_yuan = VALUES(total_market_cap_yuan),
+            circ_market_cap_yuan = VALUES(circ_market_cap_yuan),
+            total_shares = VALUES(total_shares),
+            float_shares = VALUES(float_shares),
+            pe_dynamic = VALUES(pe_dynamic),
+            pc = VALUES(pc),
+            pe_static = VALUES(pe_static),
+            ps = VALUES(ps),
+            pb = VALUES(pb),
+            raw_quote_json = VALUES(raw_quote_json),
+            fetched_at = VALUES(fetched_at)
+    </insert>
+</mapper>
