@@ -44,7 +44,8 @@ public class TraderDecisionRunController {
      */
     @GetMapping("/{id}/pdf/preview")
     public ResponseEntity<byte[]> previewPdf(@PathVariable("id") @NotBlank(message = "id 不能为空") String id) {
-        return PdfResponseSupport.previewEntity(null, pdfFileName(id));
+        byte[] pdf = traderDecisionRunAdminService.buildRunPdf(id);
+        return PdfResponseSupport.previewEntity(pdf, pdfFileName(id));
     }
 
     /**
@@ -52,7 +53,7 @@ public class TraderDecisionRunController {
      */
     @GetMapping("/{id}/pdf/export")
     public ResponseEntity<byte[]> exportPdf(@PathVariable("id") @NotBlank(message = "id 不能为空") String id) {
-        byte[] pdf = null;
+        byte[] pdf = traderDecisionRunAdminService.buildRunPdf(id);
         return PdfResponseSupport.downloadEntity(pdf, pdfFileName(id));
     }
 

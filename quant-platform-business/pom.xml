@@ -59,5 +59,58 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-all</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>html2pdf</artifactId>
+        </dependency>
     </dependencies>
+
+    <profiles>
+        <!-- 可选：mvn -pl quant-platform-business -Ppdf-fonts generate-resources -->
+        <profile>
+            <id>pdf-fonts</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.googlecode.maven-download-plugin</groupId>
+                        <artifactId>download-maven-plugin</artifactId>
+                        <version>1.9.0</version>
+                        <executions>
+                            <execution>
+                                <id>download-noto-sans-sc</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>wget</goal>
+                                </goals>
+                                <configuration>
+                                    <url>https://raw.githubusercontent.com/notofonts/noto-cjk/main/Sans/OTF/SimplifiedChinese/NotoSansCJKsc-Regular.otf</url>
+                                    <outputDirectory>${project.basedir}/src/main/resources/fonts</outputDirectory>
+                                    <outputFileName>NotoSansCJKsc-Regular.otf</outputFileName>
+                                    <overwrite>false</overwrite>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>download-noto-emoji</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>wget</goal>
+                                </goals>
+                                <configuration>
+                                    <url>https://raw.githubusercontent.com/googlefonts/noto-emoji/v2.028/fonts/NotoEmoji-Regular.ttf</url>
+                                    <outputDirectory>${project.basedir}/src/main/resources/fonts</outputDirectory>
+                                    <outputFileName>NotoEmoji-Regular.ttf</outputFileName>
+                                    <overwrite>false</overwrite>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
