@@ -23,7 +23,7 @@ public class LangChain4jOpenAiProperties {
      * 非流式模型（{@link dev.langchain4j.model.chat.ChatModel}）：规划、阻塞对话等。
      * DeepSeek V4 示例：{@code deepseek-v4-pro}、{@code deepseek-v4-flash}。
      */
-    private String model = "deepseek-v4-pro";
+    private String model = "deepseek-v4-flash";
 
     /**
      * 流式模型（{@link dev.langchain4j.model.chat.StreamingChatModel}）：SSE 逐 token 输出。

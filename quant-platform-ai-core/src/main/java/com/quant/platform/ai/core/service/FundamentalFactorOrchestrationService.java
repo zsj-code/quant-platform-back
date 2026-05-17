@@ -1,6 +1,8 @@
 package com.quant.platform.ai.core.service;
 
+import com.quant.platform.ai.core.client.EastmoneyF10GIncomeClient;
 import com.quant.platform.ai.core.client.EastmoneyPledgeRatioClient;
+import com.quant.platform.ai.core.client.EastmoneyShareHolderIncreaseClient;
 import com.quant.platform.ai.core.client.ThsFinanceAnnounceClient;
 import com.quant.platform.ai.core.factor.fundamental.*;
 import com.quant.platform.ai.core.port.FinancialStatementPort;
@@ -27,19 +29,25 @@ public class FundamentalFactorOrchestrationService {
     private final RegulatoryAnnouncementPort regulatoryAnnouncementPort;
     private final EastmoneyPledgeRatioClient eastmoneyPledgeRatioClient;
     private final KlineBarPort klineBarPort;
+    private final EastmoneyShareHolderIncreaseClient eastmoneyShareHolderIncreaseClient;
+    private final EastmoneyF10GIncomeClient eastmoneyF10GIncomeClient;
 
     public FundamentalFactorOrchestrationService(StockValuationSnapshotPort snapshotPort,
                                                  FinancialStatementPort financialStatementPort,
                                                  @Autowired(required = false) ThsFinanceAnnounceClient thsFinanceAnnounceClient,
                                                  @Autowired(required = false) RegulatoryAnnouncementPort regulatoryAnnouncementPort,
                                                  @Autowired(required = false) EastmoneyPledgeRatioClient eastmoneyPledgeRatioClient,
-                                                 @Autowired(required = false) KlineBarPort klineBarPort) {
+                                                 @Autowired(required = false) KlineBarPort klineBarPort,
+                                                 @Autowired(required = false) EastmoneyShareHolderIncreaseClient eastmoneyShareHolderIncreaseClient,
+                                                 @Autowired(required = false) EastmoneyF10GIncomeClient eastmoneyF10GIncomeClient) {
         this.snapshotPort = snapshotPort;
         this.financialStatementPort = financialStatementPort;
         this.thsFinanceAnnounceClient = thsFinanceAnnounceClient;
         this.regulatoryAnnouncementPort = regulatoryAnnouncementPort;
         this.eastmoneyPledgeRatioClient = eastmoneyPledgeRatioClient;
         this.klineBarPort = klineBarPort;
+        this.eastmoneyShareHolderIncreaseClient = eastmoneyShareHolderIncreaseClient;
+        this.eastmoneyF10GIncomeClient = eastmoneyF10GIncomeClient;
     }
 
     public Map<String, Object> evaluate(String symbol) {
@@ -66,7 +74,8 @@ public class FundamentalFactorOrchestrationService {
         FundamentalContext ctx = new FundamentalContext(symbol, code, snapshot, byType);
 
         Map<FundamentalFactorGroup, List<FundamentalFactor>> grouped = FundamentalFactorCatalog.allGrouped(
-                thsFinanceAnnounceClient, regulatoryAnnouncementPort, eastmoneyPledgeRatioClient, klineBarPort);
+                thsFinanceAnnounceClient, regulatoryAnnouncementPort, eastmoneyPledgeRatioClient, klineBarPort,
+                eastmoneyShareHolderIncreaseClient, eastmoneyF10GIncomeClient);
         Map<FundamentalFactorGroup, List<FundamentalResult>> results = new LinkedHashMap<>();
         for (Map.Entry<FundamentalFactorGroup, List<FundamentalFactor>> e : grouped.entrySet()) {
             List<FundamentalResult> list = new ArrayList<>();

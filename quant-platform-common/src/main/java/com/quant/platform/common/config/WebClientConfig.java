@@ -211,6 +211,26 @@ public class WebClientConfig {
     }
 
     /**
+     * 东财 securities 数据中心（F10 利润表等）：{@link EastmoneySecuritiesEndpoints#BASE_DATACENTER_SECURITIES}
+     */
+    @Bean
+    @Qualifier("eastmoneySecuritiesDatacenterWebClient")
+    public WebClient eastmoneySecuritiesDatacenterWebClient(WebClient.Builder commonWebClientBuilder) {
+        ConnectionProvider provider = ConnectionProvider.builder("eastmoney-securities-datacenter").maxConnections(20)
+                .pendingAcquireTimeout(Duration.ofSeconds(10)).build();
+
+        HttpClient httpClient = HttpClient.create(provider).option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
+                .responseTimeout(Duration.ofSeconds(15)).keepAlive(false)
+                .doOnConnected(conn -> conn.addHandlerLast(new ReadTimeoutHandler(15, TimeUnit.SECONDS))
+                        .addHandlerLast(new WriteTimeoutHandler(15, TimeUnit.SECONDS)));
+
+        return commonWebClientBuilder.clientConnector(new ReactorClientHttpConnector(httpClient))
+                .baseUrl(EastmoneySecuritiesEndpoints.BASE_DATACENTER_SECURITIES)
+                .defaultHeader(HttpHeaders.REFERER, "https://emweb.securities.eastmoney.com/")
+                .defaultHeader(HttpHeaders.CONNECTION, "close").build();
+    }
+
+    /**
      * 同花顺 basic（个股财务页 JSON），需带个股 Referer。
      */
     @Bean

@@ -45,7 +45,7 @@ public final class S1MarketPanicGreedFactor implements SentimentFactor {
                 .level(FactorSignalLevel.UNAVAILABLE)
                 .summary("全市场恐慌-贪婪：缺少标准化综合指数（0~100）")
                 .metrics(m)
-                .notes(List.of("待接入：50日上涨占比、全市场成交量偏离、沪深300期现价差、融资买入占比、北向净流入偏离等，加权标准化后写入本因子输入"))
+                .notes(List.of("待接入：50日上涨占比、全市场成交量偏离、沪深300期现价差、融资买入占比等，加权标准化后写入本因子输入"))
                 .build();
     }
 

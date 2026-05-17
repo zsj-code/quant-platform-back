@@ -22,21 +22,11 @@ public final class SentimentMdThresholds {
     public static final double S2_NEUTRAL_HIGH = 0.55;
     public static final double S2_BULLISH_LOW = 0.40;
 
-    // ----- S3 北向 20 日累计净买入（亿元人民币）-----
-    public static final double S3_HUGE_OUTFLOW_BELOW = -300;
-    public static final double S3_MID_OUTFLOW_BELOW = -100;
-    public static final double S3_MID_INFLOW_ABOVE = 100;
-    public static final double S3_HUGE_INFLOW_ABOVE = 300;
-
     // ----- S4 融资买入 / 全市场成交额（%）-----
     public static final double S4_ICE_COLD_BELOW = 6.5;
     public static final double S4_COLD_NEUTRAL_HIGH = 8.5;
     public static final double S4_WARM_HIGH = 10.5;
     public static final double S4_EUPHORIC_ABOVE = 12;
-
-    // ----- F1 北向行业偏好（%）-----
-    public static final double F1_HIGHLY_CONCENTRATED_ABOVE = 40;
-    public static final double F1_DISPERSED_MAX_SHARE_BELOW = 20;
 
     // ----- F2 大单与散户背离（%）-----
     public static final double F2_STRONG_DIVERGENCE_ABS_ABOVE = 5;
@@ -65,10 +55,6 @@ public final class SentimentMdThresholds {
     // ----- G3 删帖比例（%）-----
     public static final double G3_MANIPULATION_SUSPICION_ABOVE = 15;
 
-    // ----- G4 北向个股 -----
-    public static final int G4_STREAK_DAYS = 5;
-    public static final double G4_CUMULATIVE_MV_PCT = 2;
-
     // ----- D1 IV 分位（%）-----
     public static final double D1_IV_HIGH_STRESS_PCT = 90;
     public static final double D1_IV_LOW_CALM_PCT = 10;
@@ -92,19 +78,11 @@ public final class SentimentMdThresholds {
                 "bearishHigh", S2_BEARISH_HIGH,
                 "neutralHigh", S2_NEUTRAL_HIGH,
                 "bullishLow", S2_BULLISH_LOW));
-        m.put("S3_cny100m", Map.of(
-                "hugeOutflowBelow", S3_HUGE_OUTFLOW_BELOW,
-                "midOutflowBelow", S3_MID_OUTFLOW_BELOW,
-                "midInflowAbove", S3_MID_INFLOW_ABOVE,
-                "hugeInflowAbove", S3_HUGE_INFLOW_ABOVE));
         m.put("S4_pct", Map.of(
                 "iceColdBelow", S4_ICE_COLD_BELOW,
                 "coldNeutralHigh", S4_COLD_NEUTRAL_HIGH,
                 "warmHigh", S4_WARM_HIGH,
                 "euphoricAbove", S4_EUPHORIC_ABOVE));
-        m.put("F1_pct", Map.of(
-                "highlyConcentratedAbove", F1_HIGHLY_CONCENTRATED_ABOVE,
-                "dispersedMaxShareBelow", F1_DISPERSED_MAX_SHARE_BELOW));
         m.put("F2_pct", Map.of(
                 "strongDivergenceAbsAbove", F2_STRONG_DIVERGENCE_ABS_ABOVE,
                 "flatBandHalfWidth", F2_FLAT_BAND_HALF_WIDTH));
@@ -125,7 +103,6 @@ public final class SentimentMdThresholds {
                 "debateLow", G2_DEBATE_LOW,
                 "pessimisticLow", G2_PESSIMISTIC_LOW));
         m.put("G3_pct", Map.of("manipulationSuspicionAbove", G3_MANIPULATION_SUSPICION_ABOVE));
-        m.put("G4", Map.of("streakDays", G4_STREAK_DAYS, "cumulativeMvPct", G4_CUMULATIVE_MV_PCT));
         m.put("D1_pct", Map.of("ivHighStressPct", D1_IV_HIGH_STRESS_PCT, "ivLowCalmPct", D1_IV_LOW_CALM_PCT));
         m.put("D2_pct", Map.of("shortBalanceSurgePct", D2_SHORT_BALANCE_SURGE_PCT));
         m.put("D3_pct", Map.of("bullishTitleDensityMomSurgePct", D3_BULLISH_TITLE_DENSITY_MOM_SURGE_PCT));

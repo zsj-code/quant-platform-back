@@ -24,6 +24,9 @@ public final class EastmoneyFinancialStatementEndpoints {
     /** 全市场融资融券历史汇总（按日，见东财 RPTA_RZRQ_LSHJ） */
     public static final String REPORT_RPTA_RZRQ_LSHJ = "RPTA_RZRQ_LSHJ";
 
+    /** 股东增减持（按证券，见东财 RPT_SHARE_HOLDER_INCREASE） */
+    public static final String REPORT_RPT_SHARE_HOLDER_INCREASE = "RPT_SHARE_HOLDER_INCREASE";
+
     /** 列表页默认条数（与站点常见分页一致） */
     public static final int DEFAULT_PAGE_SIZE = 20;
 }

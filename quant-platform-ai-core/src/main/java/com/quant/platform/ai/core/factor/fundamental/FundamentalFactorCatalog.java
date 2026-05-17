@@ -1,7 +1,9 @@
 package com.quant.platform.ai.core.factor.fundamental;
 
 
+import com.quant.platform.ai.core.client.EastmoneyF10GIncomeClient;
 import com.quant.platform.ai.core.client.EastmoneyPledgeRatioClient;
+import com.quant.platform.ai.core.client.EastmoneyShareHolderIncreaseClient;
 import com.quant.platform.ai.core.client.ThsFinanceAnnounceClient;
 import com.quant.platform.ai.core.factor.fundamental.hardfilter.*;
 import com.quant.platform.ai.core.factor.fundamental.watchlist.*;
@@ -17,7 +19,7 @@ public final class FundamentalFactorCatalog {
     }
 
     public static Map<FundamentalFactorGroup, List<FundamentalFactor>> allGrouped() {
-        return allGrouped(null, null, null, null);
+        return allGrouped(null, null, null, null, null, null);
     }
 
     /**
@@ -25,7 +27,7 @@ public final class FundamentalFactorCatalog {
      */
     public static Map<FundamentalFactorGroup, List<FundamentalFactor>> allGrouped(
             @Nullable ThsFinanceAnnounceClient thsFinanceAnnounceClient) {
-        return allGrouped(thsFinanceAnnounceClient, null, null, null);
+        return allGrouped(thsFinanceAnnounceClient, null, null, null, null, null);
     }
 
     /**
@@ -35,7 +37,7 @@ public final class FundamentalFactorCatalog {
     public static Map<FundamentalFactorGroup, List<FundamentalFactor>> allGrouped(
             @Nullable ThsFinanceAnnounceClient thsFinanceAnnounceClient,
             @Nullable RegulatoryAnnouncementPort regulatoryAnnouncementPort) {
-        return allGrouped(thsFinanceAnnounceClient, regulatoryAnnouncementPort, null, null);
+        return allGrouped(thsFinanceAnnounceClient, regulatoryAnnouncementPort, null, null, null, null);
     }
 
     /**
@@ -46,22 +48,47 @@ public final class FundamentalFactorCatalog {
             @Nullable RegulatoryAnnouncementPort regulatoryAnnouncementPort,
             @Nullable EastmoneyPledgeRatioClient eastmoneyPledgeRatioClient,
             @Nullable KlineBarPort klineBarPort) {
+        return allGrouped(thsFinanceAnnounceClient, regulatoryAnnouncementPort,
+                eastmoneyPledgeRatioClient, klineBarPort, null, null);
+    }
+
+    /**
+     * @param shareHolderIncreaseClient 为 null 时，{@link ShareholderReductionWatchlistFactor} 不可用
+     * @param eastmoneyF10GIncomeClient 为 null 时，依赖 F10 的观察/硬筛因子不可用
+     */
+    public static Map<FundamentalFactorGroup, List<FundamentalFactor>> allGrouped(
+            @Nullable ThsFinanceAnnounceClient thsFinanceAnnounceClient,
+            @Nullable RegulatoryAnnouncementPort regulatoryAnnouncementPort,
+            @Nullable EastmoneyPledgeRatioClient eastmoneyPledgeRatioClient,
+            @Nullable KlineBarPort klineBarPort,
+            @Nullable EastmoneyShareHolderIncreaseClient shareHolderIncreaseClient) {
+        return allGrouped(thsFinanceAnnounceClient, regulatoryAnnouncementPort,
+                eastmoneyPledgeRatioClient, klineBarPort, shareHolderIncreaseClient, null);
+    }
+
+    public static Map<FundamentalFactorGroup, List<FundamentalFactor>> allGrouped(
+            @Nullable ThsFinanceAnnounceClient thsFinanceAnnounceClient,
+            @Nullable RegulatoryAnnouncementPort regulatoryAnnouncementPort,
+            @Nullable EastmoneyPledgeRatioClient eastmoneyPledgeRatioClient,
+            @Nullable KlineBarPort klineBarPort,
+            @Nullable EastmoneyShareHolderIncreaseClient shareHolderIncreaseClient,
+            @Nullable EastmoneyF10GIncomeClient eastmoneyF10GIncomeClient) {
         return Map.of(
                 FundamentalFactorGroup.HARD_FILTER, List.of(
                         new AuditOpinionHardFilterFactor(thsFinanceAnnounceClient),
                         new RegulatoryPunishmentHardFilterFactor(regulatoryAnnouncementPort),
                         new CashflowDeathDivergenceHardFilterFactor(),
                         new HighRiskPledgeHardFilterFactor(eastmoneyPledgeRatioClient, klineBarPort),
-                        new GoodwillDamHardFilterFactor(),
+                        new GoodwillDamHardFilterFactor(eastmoneyF10GIncomeClient),
                         new ShellCompanyHardFilterFactor(),
                         new BadAuditFirmHardFilterFactor()
                 ),
                 FundamentalFactorGroup.WATCHLIST, List.of(
                         new DepositLoanDoubleHighWatchlistFactor(),
-                        new RndOverCapitalizationWatchlistFactor(),
+                        new RndOverCapitalizationWatchlistFactor(eastmoneyF10GIncomeClient),
                         new DeductNetProfitDeteriorationWatchlistFactor(),
-                        new LargeImpairmentWatchlistFactor(),
-                        new ShareholderReductionWatchlistFactor(),
+                        new LargeImpairmentWatchlistFactor(eastmoneyF10GIncomeClient),
+                        new ShareholderReductionWatchlistFactor(shareHolderIncreaseClient),
                         new ConsensusEstimateCutWatchlistFactor()
                 ),
                 FundamentalFactorGroup.QUALITY_SCORE, List.of(
