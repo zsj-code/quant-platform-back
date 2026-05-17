@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * 将 LangChain4j ChatMemory 持久化到 Redis（按 sessionId 隔离）。
  * <p>
- * 只存 user/ai 文本消息（工具调用中间态不落库），用于多轮对话上下文恢复。
+ * 只存 user/ai 文本消息（工具调用中间态不落库）；ai 另存 {@code thinking}（DeepSeek {@code reasoning_content} 回传所需）。
  */
 public class RedisChatMemoryProvider implements ChatMemoryProvider {
     private static final ObjectMapper MAPPER = new ObjectMapper();
@@ -120,6 +120,8 @@ public class RedisChatMemoryProvider implements ChatMemoryProvider {
     private static final class StoredMessage {
         private String role;
         private String text;
+        /** DeepSeek 思考模式：对应 API {@code reasoning_content}，须与正文一并回传 */
+        private String thinking;
 
         public StoredMessage() {
         }
@@ -135,7 +137,9 @@ public class RedisChatMemoryProvider implements ChatMemoryProvider {
             if (m instanceof AiMessage) {
                 StoredMessage sm = new StoredMessage();
                 sm.role = "ai";
-                sm.text = ((AiMessage) m).text();
+                AiMessage am = (AiMessage) m;
+                sm.text = am.text();
+                sm.thinking = am.thinking();
                 return sm;
             }
             return null;
@@ -146,7 +150,11 @@ public class RedisChatMemoryProvider implements ChatMemoryProvider {
                 return UserMessage.from(text == null ? "" : text);
             }
             if ("ai".equalsIgnoreCase(role)) {
-                return AiMessage.from(text == null ? "" : text);
+                AiMessage.Builder builder = AiMessage.builder().text(text == null ? "" : text);
+                if (thinking != null && !thinking.isBlank()) {
+                    builder.thinking(thinking);
+                }
+                return builder.build();
             }
             return null;
         }
@@ -165,6 +173,14 @@ public class RedisChatMemoryProvider implements ChatMemoryProvider {
 
         public void setText(String text) {
             this.text = text;
+        }
+
+        public String getThinking() {
+            return thinking;
+        }
+
+        public void setThinking(String thinking) {
+            this.thinking = thinking;
         }
     }
 }

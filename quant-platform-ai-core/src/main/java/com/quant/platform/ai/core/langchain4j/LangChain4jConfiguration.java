@@ -31,6 +31,8 @@ public class LangChain4jConfiguration {
                 .modelName(p.getModel())
                 .temperature(p.getTemperature())
                 .timeout(Duration.ofSeconds(p.getTimeout()))
+                .returnThinking(p.isReturnThinking())
+                .sendThinking(p.isSendThinking())
                 .logRequests(true)
                 .logResponses(true)
                 .build();
@@ -44,6 +46,8 @@ public class LangChain4jConfiguration {
                 .modelName(p.resolveStreamingModel())
                 .temperature(p.getTemperature())
                 .timeout(Duration.ofSeconds(p.getTimeout()))
+                .returnThinking(p.isReturnThinking())
+                .sendThinking(p.isSendThinking())
                 .logRequests(true)
                 .logResponses(true)
                 .build();

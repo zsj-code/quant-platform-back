@@ -79,5 +79,8 @@ quant:
 #        model: ${QUANT_AI_LANGCHAIN4J_OPENAI_MODEL:deepseek-v4-pro}
         # 流式（Research chat-sse、TokenStream）；未设则与 model 相同
         streaming-model: ${QUANT_AI_LANGCHAIN4J_OPENAI_STREAMING_MODEL:deepseek-v4-flash}
+        # DeepSeek 思考模式：须解析并回传 reasoning_content（多轮/工具调用）；默认 true
+        return-thinking: ${QUANT_AI_LANGCHAIN4J_OPENAI_RETURN_THINKING:true}
+        send-thinking: ${QUANT_AI_LANGCHAIN4J_OPENAI_SEND_THINKING:true}
         temperature: ${QUANT_AI_LANGCHAIN4J_OPENAI_TEMPERATURE:0.2}
         timeout: 120000

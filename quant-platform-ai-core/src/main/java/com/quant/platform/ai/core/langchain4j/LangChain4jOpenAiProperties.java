@@ -38,6 +38,17 @@ public class LangChain4jOpenAiProperties {
 
     private int timeout = 12000;
 
+    /**
+     * 解析 API 响应中的 {@code reasoning_content} 到 {@link dev.langchain4j.data.message.AiMessage#thinking()}。
+     * DeepSeek V4 思考模式建议开启。
+     */
+    private boolean returnThinking = true;
+
+    /**
+     * 后续请求将历史 assistant 的 thinking 作为 {@code reasoning_content} 回传（工具调用多轮必需）。
+     */
+    private boolean sendThinking = true;
+
     public String getApiKey() {
         return apiKey;
     }
@@ -94,6 +105,22 @@ public class LangChain4jOpenAiProperties {
 
     public int getTimeout() {
         return timeout;
+    }
+
+    public boolean isReturnThinking() {
+        return returnThinking;
+    }
+
+    public void setReturnThinking(boolean returnThinking) {
+        this.returnThinking = returnThinking;
+    }
+
+    public boolean isSendThinking() {
+        return sendThinking;
+    }
+
+    public void setSendThinking(boolean sendThinking) {
+        this.sendThinking = sendThinking;
     }
 }
 
